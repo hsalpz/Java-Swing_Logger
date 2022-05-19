@@ -40,11 +40,6 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`ID`, `Username`, `Usermail`, `Userpass`) VALUES
-(1, 'Bastion', 'bastion@gmail.com', '75f0446f0af2e726b20bd5bc51e4e7c6'),
-(2, 'Mytsu', 'mytsu@gmail.com', '77f982b4c3d697ae6905cdad41a24f16');
-COMMIT;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
