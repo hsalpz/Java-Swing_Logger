@@ -206,6 +206,7 @@ public class Window extends JFrame{
 
                 int midBalance = userBalance + Integer.parseInt(userInputBalance.getText());
                 setNewUserBalance(userID, midBalance);
+                setWarningMsg("NUEVO BALANCE");
                 mainScreen();
             }
             
@@ -223,6 +224,7 @@ public class Window extends JFrame{
 
                 int midBalance = userBalance - Integer.parseInt(userInputBalance.getText());
                 setNewUserBalance(userID, midBalance);
+                setWarningMsg("NUEVO BALANCE");
                 mainScreen();
             }
             
@@ -462,4 +464,5 @@ public class Window extends JFrame{
         }    
 
     }
+
 }
