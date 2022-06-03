@@ -11,11 +11,11 @@ public class Window extends JFrame{
 
 
     private JPanel userScreen;
-    private JTextField userNameInput, userMailInput, userPasswordInput;
-    private JButton acceptButton, returnButton;
+    private JTextField userNameInput, userMailInput, userPasswordInput, userInputBalance;
+    private JButton acceptButton, returnButton, setNewBalance, drawBalance;
     private JLabel serverOutput, textA, textB, textC;
 
-    public int userID;
+    public int userID, userBalance, userNewBalance;
     public boolean status = false;
 
     //CONSTRUCTOR
@@ -183,6 +183,51 @@ public class Window extends JFrame{
         textA.setBounds(50,150,400,25);
         userScreen.add(textA);
 
+        textB = new JLabel();
+        textB.setBounds(50,200,400,25);
+        userScreen.add(textB);
+
+        textC =  new JLabel("Que desea realizar?");
+        textC.setBounds(400,300,400,25);
+        userScreen.add(textC);
+
+        userInputBalance = new JTextField("0");
+        userInputBalance.setBounds(400,350,150,25);
+        userScreen.add(userInputBalance);
+
+        setNewBalance = new JButton("Agregar");
+        setNewBalance.setBounds(400,400,150,25);
+        userScreen.add(setNewBalance);
+        setNewBalance.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+
+                int midBalance = userBalance + Integer.parseInt(userInputBalance.getText());
+                setNewUserBalance(userID, midBalance);
+                mainScreen();
+            }
+            
+        });
+
+        drawBalance = new JButton("Sacar");
+        drawBalance.setBounds(400,450,150,25);
+        userScreen.add(drawBalance);
+
+        drawBalance.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+
+                int midBalance = userBalance - Integer.parseInt(userInputBalance.getText());
+                setNewUserBalance(userID, midBalance);
+                mainScreen();
+            }
+            
+        });
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/userdb", "root", "");
@@ -196,6 +241,13 @@ public class Window extends JFrame{
             
             if(rs.next()){
                 textA.setText("Bienvenido " + rs.getString(2));
+                userBalance = rs.getInt(5);
+                textB.setText("Balance: " + userBalance);
+                if(rs.getInt(5) <= 0){
+                    textB.setForeground(Color.red);
+                }else{
+                    textB.setForeground(Color.black);
+                }
             }else{
                 userID = 0;
             }
@@ -204,12 +256,11 @@ public class Window extends JFrame{
         } catch (Exception ef) {
             //TODO: handle exception
             System.out.println(ef);
-        }    
-
+        }   
         acceptButton = new JButton("Borrar usuario");
         acceptButton.setBounds(200,525,150,25);
         userScreen.add(acceptButton);
-
+        
         // DELETE FROM `users` WHERE `ID`= 4; 
         acceptButton.addActionListener(new ActionListener(){
 
@@ -332,7 +383,7 @@ public class Window extends JFrame{
                     Statement stmt = con.createStatement();
 
                     String serverChecked = "select * from users where Username = '" + userName + "' and Usermail = '" + userMail + "'";
-                    String serverNewUser = "INSERT INTO `users` (`ID`, `Username`, `Usermail`, `Userpass`) VALUES (NULL, '" + userName + "', '" + userMail + "', '" + getMD5(password) + "')";
+                    String serverNewUser = "INSERT INTO `users` (`ID`, `Username`, `Usermail`, `Userpass`, `balance`) VALUES (NULL, '" + userName + "', '" + userMail + "', '" + getMD5(password) + "', '" + 0 +  "') ";
 
                     //System.out.println(serverChecked);
                     ResultSet rs = stmt.executeQuery(serverChecked);
@@ -390,5 +441,25 @@ public class Window extends JFrame{
         JDialog dialog = optionPane.createDialog("Warning!");
         dialog.setAlwaysOnTop(true);
         dialog.setVisible(true);
+    }
+
+    public void setNewUserBalance(int userID, int balance){
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/userdb", "root", "");
+            Statement stmt = con.createStatement();
+
+            String serverUpdate = "UPDATE `users` SET `balance` = '" + balance +"' WHERE `users`.`ID` = " + userID + ";";
+            // UPDATE `users` SET `balance` = '50' WHERE `users`.`ID` = 9; 
+            //System.out.println(serverChecked);
+            stmt.executeUpdate(serverUpdate);
+
+            con.close();
+        } catch (Exception ef) {
+            //TODO: handle exception
+            System.out.println(ef);
+        }    
+
     }
 }
